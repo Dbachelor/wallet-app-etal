@@ -1,0 +1,1 @@
+export const roles = [ {name:'user', id:1}, {name:'admin', id:2},]
