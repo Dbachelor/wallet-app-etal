@@ -3,6 +3,7 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { NotFoundError } from 'rxjs';
+import { log } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -14,32 +15,30 @@ export class AuthService {
       return {success:true, message:`User ${username} not found`}
     }
      if (await this.usersService.checkUserPassword(user?.password, pass)){
-        console.log('yesss')
-        const result = {id: user.id, email: user.email, role: user.role}
+        const result = {sub: user.id, phone_number: user.phone_number, role: user.role.id}
         const token = await this.createToken(result);
         return {...result, token: token}
      }
-     console.log('noooo')
      return {success: false, message: "invalid credentials"}
     
   }
 
   async signUp(user): Promise<any> {
-    const check = await this.usersService.findOne(user.email);
+    const check = await this.usersService.findOne(user.phone_number);
     if (check){
-        throw new Error(`${user?.email} already exists`);
+        return {success: false, message:`${user?.phone_number} already exists`};
     }
 
     const createUser =  this.usersService.createUser(user);
     if (createUser){
-        return {success: true, message: `${user.email} successfully created`}
+        return {success: true, message: `${user.phone_number} successfully created`}
     }
 
   }
 
-  async createToken(user): Promise<any> {
+  async createToken(payload): Promise<any> {
     return {
-      access_token: await this.jwtService.signAsync(user),
+      access_token: await this.jwtService.signAsync(payload, {secret:this.configService.get('SECRET')}),
     };
   }
  

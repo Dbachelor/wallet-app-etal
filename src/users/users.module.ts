@@ -7,6 +7,8 @@ import { UsersController } from './users.controller';
 import { UserWalletService } from './user_wallet.service';
 import { UserWallet } from './user_wallet.entity';
 import { Currency } from 'src/currency/entities/currency.entity';
+import { AuthModule } from 'src/auth/auth.module';
+
 
 
 @Module({

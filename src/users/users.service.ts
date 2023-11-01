@@ -11,10 +11,12 @@ export class UsersService {
 
     constructor(@InjectRepository(User) private userRepository: Repository<User>, private rolesService: RolesService, private dataSource: DataSource){}
 
-    async findOne(email: string): Promise<User | undefined> {
-        console.log(email);
+    async findOne(phone_number: string): Promise<User | undefined> {
         
-        const user = await this.userRepository.findOneBy({email:email})
+        const user = await this.userRepository.findOne({
+            where: {phone_number: phone_number},
+            relations: ['role'],
+          })
         if (! user){
             return undefined;
         }
@@ -38,7 +40,7 @@ export class UsersService {
             lastName: user.lastName,
             password: await argon.hash(user.password),
             role: await this.rolesService.findRole(1),
-            email: user.email
+            phone_number: user.phone_number
           }).execute();
         return true;
     }

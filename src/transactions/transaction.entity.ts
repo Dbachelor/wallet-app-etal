@@ -1,4 +1,5 @@
 import { Currency } from "src/currency/entities/currency.entity";
+import { UserWallet } from "src/users/user_wallet.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -7,11 +8,11 @@ export class Transaction{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    from_user_id: number;
+    @ManyToOne(() => UserWallet, (userWallet) => userWallet.id)
+    sender_wallet: UserWallet;
 
-    @Column()
-    to_user_id: number;
+    @ManyToOne(() => UserWallet, (userWallet) => userWallet.id)
+    receiver_wallet: UserWallet;
 
     @Column()
     amount: string;
@@ -25,5 +26,8 @@ export class Transaction{
     @Column( {type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP'})
     date:string;
+
+    @Column({ unique:true})
+    uuid: string;
 }
 

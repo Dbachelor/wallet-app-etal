@@ -13,12 +13,12 @@ export class UserWalletService{
      private dataSource:DataSource){}
 
     async createWallet(userID, currencyID): Promise<Object>{
-        //check if a wallet for a currency already exists for this user
+        //checks if a wallet for a currency already exists for this user
         const wallet = await this.userWalletRepository.createQueryBuilder('user_wallet')
         .where('user_wallet.userId = :userid', { userid: userID })
         .andWhere('user_wallet.currencyId = :curid', { curid: currencyID })
         .getOne();
-        console.log('the', wallet, 'is here');
+
         if (wallet){
             return {wallet_id: false};
         }
@@ -49,5 +49,15 @@ export class UserWalletService{
         wallet.balance = wallet.balance + amount;
         await walletRepository.save(wallet)
         return {success: true, wallet: wallet}
+    }
+
+    async debitUserWallet(amount, wallet_id){
+        const walletRepository = this.dataSource.getRepository(UserWallet)
+        const wallet = await walletRepository.findOneBy({
+            wallet_id: wallet_id,
+        })
+        wallet.balance = wallet.balance - amount;
+        await walletRepository.save(wallet)
+        return true;
     }
 }
