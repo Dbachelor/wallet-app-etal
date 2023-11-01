@@ -37,6 +37,7 @@ export class UserWalletService{
         return {wallet_id: wallet_id};
     }
 
+
     async listWallets(user){
         console.log(user)
         if(user.role == 1){
@@ -46,6 +47,7 @@ export class UserWalletService{
         return await this.userWalletRepository.find()
     }
 
+
     async getWalletDetails(wallet_id){
         const walletDetails = await this.userWalletRepository.findOne({
             where: {wallet_id: wallet_id},
@@ -53,6 +55,7 @@ export class UserWalletService{
           });
           return {details: walletDetails}
     }
+
 
     async creditUserWallet(amount, wallet_id){
         const walletRepository = this.dataSource.getRepository(UserWallet)
@@ -63,6 +66,7 @@ export class UserWalletService{
         await walletRepository.save(wallet)
         return {success: true, wallet: wallet}
     }
+    
 
     async debitUserWallet(amount, wallet_id){
         const walletRepository = this.dataSource.getRepository(UserWallet)

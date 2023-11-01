@@ -11,7 +11,7 @@ export const dataSourceOptions : DataSourceOptions & SeederOptions = {
     database: 'wallet-app',
     entities: ['dist/**/*.entity{ .ts,.js}'],
     synchronize: false,
-    migrations: ['dist/migrations/*{.ts,.js}'],
+    migrations: ['dist/src/migrations/*{.ts,.js}'],
     migrationsRun: true,
     logging: true,
     seeds: ['dist/src/db/seeds/*.seeder.js'],
