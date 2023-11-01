@@ -12,7 +12,7 @@ import { AuthModule } from 'src/auth/auth.module';
 
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([UserWallet]), TypeOrmModule.forFeature([Currency]), RolesModule],
+    imports: [TypeOrmModule.forFeature([User, UserWallet, Currency]), RolesModule],
     providers: [UsersService, UserWalletService],
     exports: [UsersService, UserWalletService],
     controllers: [UsersController],

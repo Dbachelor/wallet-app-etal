@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
+import { TransactionDto } from './Dto/transaction.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('transaction')
@@ -11,8 +12,7 @@ export class TransactionsController {
     constructor(private transactionService: TransactionsService){}
 
     @Post('transfer')
-    async transfer(@Body() transactionData: Record<any, any>): Promise<object|undefined>{
-
+    async transfer(@Body() transactionData: TransactionDto): Promise<object|undefined>{
         return await this.transactionService.walletTransfer(transactionData)
     }
 

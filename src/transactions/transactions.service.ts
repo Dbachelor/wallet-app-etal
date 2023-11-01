@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from './transaction.entity';
 import { DataSource, In, Repository } from 'typeorm';
-import { UsersService } from 'src/users/users.service';
 import { UserWalletService } from 'src/users/user_wallet.service';
 import { UserWallet } from 'src/users/user_wallet.entity';
 
@@ -10,10 +9,13 @@ import { UserWallet } from 'src/users/user_wallet.entity';
 export class TransactionsService {
 
     constructor(
+    @InjectRepository(Transaction) private transactionRepository: Repository<Transaction>,
     private dataSource:DataSource,
     private userWalletService: UserWalletService){}
 
     async walletTransfer(transactionData): Promise<Object | undefined>{
+        //first authenticate the transaction
+        
         //check if wallet has up to the amount
         const userWallet = await this.dataSource.getRepository(UserWallet).findOneBy({wallet_id: transactionData?.sender_wallet})
         if (userWallet.balance < transactionData.amount){
@@ -63,11 +65,23 @@ export class TransactionsService {
     }
 
     async approveTransactions(pendingTransactions: string[]): Promise<Object | void>{
-        return await this.dataSource.getRepository(Transaction).createQueryBuilder('transactions')
-        .update(Transaction)
-        .set({ status: 1 })
-        .where({ uuid: In(pendingTransactions) })
-        .execute();
-
+        var data = []
+        pendingTransactions.map(async(pendingTransaction)=>{
+            const trans_details = await this.transactionRepository.findOne({
+                where: {uuid: pendingTransaction},
+                relations: ["receiver_wallet"],
+              })
+            if (trans_details.status == 0){
+                data.push(pendingTransaction)
+                await this.userWalletService.creditUserWallet(trans_details.amount, trans_details.receiver_wallet.wallet_id)
+                await this.dataSource.getRepository(Transaction).createQueryBuilder('transactions')
+                .update(Transaction)
+                .set({ status: 1 })
+                .where({ uuid: pendingTransaction })
+                .execute();
+            }
+            
+        })
+        return data;
     }
 }

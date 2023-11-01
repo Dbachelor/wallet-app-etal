@@ -46,7 +46,7 @@ export class UserWalletService{
         const wallet = await walletRepository.findOneBy({
             wallet_id: wallet_id,
         })
-        wallet.balance = wallet.balance + amount;
+        wallet.balance = wallet.balance + parseInt(amount);
         await walletRepository.save(wallet)
         return {success: true, wallet: wallet}
     }

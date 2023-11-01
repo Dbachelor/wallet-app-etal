@@ -1,6 +1,6 @@
 import { Currency } from "src/currency/entities/currency.entity";
 import { UserWallet } from "src/users/user_wallet.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Transaction{
@@ -9,9 +9,11 @@ export class Transaction{
     id: number;
 
     @ManyToOne(() => UserWallet, (userWallet) => userWallet.id)
+    @JoinColumn()
     sender_wallet: UserWallet;
 
     @ManyToOne(() => UserWallet, (userWallet) => userWallet.id)
+    @JoinColumn()
     receiver_wallet: UserWallet;
 
     @Column()
