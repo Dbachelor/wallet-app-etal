@@ -15,8 +15,8 @@ export class Seed26173781255000 implements MigrationInterface {
     lastName: "admin"
 }]
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DELETE  FROM currency`);
-    await queryRunner.query(`DELETE  FROM role`);
+    // await queryRunner.query(`DELETE  FROM currency`);
+    // await queryRunner.query(`DELETE  FROM role`);
     
     await queryRunner.manager.insert<Currency>(Currency,[{currency:'NGN'}, {currency:'USD'}, {currency:'GBP'}, {currency:'EUR'}]).then((data) => {
       console.log(data)

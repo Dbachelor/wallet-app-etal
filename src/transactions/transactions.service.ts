@@ -64,7 +64,7 @@ export class TransactionsService {
 
     async listMonthlyTransactions(month = new Date().getMonth() + 1): Promise<Object | void>{
         return await this.dataSource.getRepository(Transaction).createQueryBuilder('transactions')
-        .where('Month(transactions.date) = :month', {month:month}).getMany();
+        .where('EXTRACT (MONTH from transactions.date) = :month', {month:month}).getMany();
     }
 
     async approveTransactions(pendingTransactions: string[]): Promise<Object | void>{
