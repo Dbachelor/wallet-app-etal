@@ -21,7 +21,7 @@ export class UsersController {
     @HttpCode(200)
     @Get('wallet')
     async listUserWallet(@Req() req: any) {
-        return this.userWalletService.listUserWallets(req.user.sub);
+        return this.userWalletService.listWallets(req.user);
     }
 
     @HttpCode(200)

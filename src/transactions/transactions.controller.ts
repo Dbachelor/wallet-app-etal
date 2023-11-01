@@ -12,8 +12,8 @@ export class TransactionsController {
     constructor(private transactionService: TransactionsService){}
 
     @Post('transfer')
-    async transfer(@Body() transactionData: TransactionDto): Promise<object|undefined>{
-        return await this.transactionService.walletTransfer(transactionData)
+    async transfer(@Body() transactionData: TransactionDto, @Req() req:any): Promise<object|undefined>{
+        return await this.transactionService.walletTransfer(transactionData, req.user)
     }
 
     @Get()

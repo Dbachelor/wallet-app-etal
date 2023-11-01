@@ -37,8 +37,21 @@ export class UserWalletService{
         return {wallet_id: wallet_id};
     }
 
-    async listUserWallets(userID){
-        return await this.userWalletRepository.findBy({user: userID})
+    async listWallets(user){
+        console.log(user)
+        if(user.role == 1){
+            return await this.userWalletRepository.findBy({user: await this.dataSource.getRepository
+                (User).findOneBy({id:user.sub})})
+        }
+        return await this.userWalletRepository.find()
+    }
+
+    async getWalletDetails(wallet_id){
+        const walletDetails = await this.userWalletRepository.findOne({
+            where: {wallet_id: wallet_id},
+            relations: ["user"],
+          });
+          return {details: walletDetails}
     }
 
     async creditUserWallet(amount, wallet_id){

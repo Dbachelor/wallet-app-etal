@@ -13,9 +13,12 @@ export class TransactionsService {
     private dataSource:DataSource,
     private userWalletService: UserWalletService){}
 
-    async walletTransfer(transactionData): Promise<Object | undefined>{
+    async walletTransfer(transactionData, user): Promise<Object | undefined>{
         //first authenticate the transaction
-        
+        const owner = await this.userWalletService.getWalletDetails(transactionData.sender_wallet);
+        if (user.sub !== owner.details.user.id){
+            return {success: false, message:'wallet authorization failed', dev_error: `${transactionData.sender_wallet} belongs to a different user`}
+        }
         //check if wallet has up to the amount
         const userWallet = await this.dataSource.getRepository(UserWallet).findOneBy({wallet_id: transactionData?.sender_wallet})
         if (userWallet.balance < transactionData.amount){
